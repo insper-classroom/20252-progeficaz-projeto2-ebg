@@ -1,9 +1,10 @@
 import pytest
-from api import app, connect_db
+from api import app
+from utils import connect_db
 from unittest.mock import patch, MagicMock
 
 
-# 1. FIXTURE: GIVEN
+# 1. FIXTURE
 @pytest.fixture
 def client():
     """
@@ -15,8 +16,8 @@ def client():
         yield client
 
 
-# 2. PATCH
-@patch('api.connect_db') # Ou seja, a função a ser substituída é, no arquivo api.py, a 'connect_db'
+# 2. PATCH 
+@patch('utils.connect_db') # Ou seja, a função a ser substituída é, no arquivo api.py, a 'connect_db'
 # WHEN 
 def test_get_imoveis(mock_connect_db, client):
     mock_conn = MagicMock()
@@ -28,7 +29,7 @@ def test_get_imoveis(mock_connect_db, client):
     mock_cursor.fetchall.return_value = [
         (1, 'Apartamento', "Rua 1", "Nº 1", "Bairro 1", "Araras", "SP"),
         (2, 'Apartamento', "Rua 2", "Nº 2", "Bairro 2", "Araras", "SP"),
-        (3, 'Apartamento', "Rua 1", "Nº 3", "Bairro 3", "Araras", "SP"),
+        (3, 'Apartamento', "Rua 3", "Nº 3", "Bairro 3", "Araras", "SP"),
     ]
     
     
@@ -40,6 +41,7 @@ def test_get_imoveis(mock_connect_db, client):
     
     
     assert response.status_code == 200
+
     expected_response = {
         'imoveis': [
             {'id': 1, 'tipo': 'Apartamento', 'Rua': 'Rua 1', 'Numero': 'Nº 1', 'Bairro': 'Bairro 1', 'Cidade': 'Araras', 'Estado': 'SP'},
