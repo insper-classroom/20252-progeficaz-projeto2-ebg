@@ -30,10 +30,9 @@ def test_get_imoveis(mock_connect_db, client):
     
     # Simulando um banco de dados
     mock_cursor.fetchall.return_value = [
-        (0, 'Apartamento', "Rua 1", "Nº 1", "Bairro 1", "Araras", "SP"),
-        (1, 'Apartamento', "Rua 2", "Nº 2", "Bairro 2", "Araras", "SP"),
-        (2, 'Apartamento', "Rua 3", "Nº 3", "Bairro 3", "Araras", "SP"),
-    ]
+    (0, 'Rua 1', 'Rua', 'Bairro 1', 'Araras', '12345-000', 'Apartamento', 350000.0, '2023-01-10'),
+    (1, 'Rua 2', 'Rua', 'Bairro 2', 'Araras', '12345-001', 'Apartamento', 360000.0, '2023-02-10'),
+    (2, 'Rua 3', 'Rua', 'Bairro 3', 'Araras', '12345-002', 'Apartamento', 370000.0, '2023-03-10')]
     
     
     mock_connect_db.return_value = mock_conn # Mandamos o Mock ser retornado quando a função for chaamda
@@ -42,13 +41,41 @@ def test_get_imoveis(mock_connect_db, client):
     
     # THEN
     assert response.status_code == 200
-    expected_response = {
-        'imoveis': [
-            {'id': 0, 'tipo': 'Apartamento', 'Rua': 'Rua 1', 'Numero': 'Nº 1', 'Bairro': 'Bairro 1', 'Cidade': 'Araras', 'Estado': 'SP'},
-            {'id': 1, 'tipo': 'Apartamento', 'Rua': 'Rua 2', 'Numero': 'Nº 2', 'Bairro': 'Bairro 2', 'Cidade': 'Araras', 'Estado': 'SP'},
-            {'id': 2, 'tipo': 'Apartamento', 'Rua': 'Rua 3', 'Numero': 'Nº 3', 'Bairro': 'Bairro 3', 'Cidade': 'Araras', 'Estado': 'SP'},
-        ]
-    }
+    expected_response = {'imoveis': [
+        {
+        'id': 0,
+        'logradouro': 'Rua 1',
+        'tipo_logradouro': 'Rua',
+        'bairro': 'Bairro 1',
+        'cidade': 'Araras',
+        'cep': '12345-000',
+        'tipo': 'Apartamento',
+        'valor': 100.0,
+        'data_aquisicao': '2023-01-10'
+        },
+        {
+        'id': 1,
+        'logradouro': 'Rua 2',
+        'tipo_logradouro': 'Rua',
+        'bairro': 'Bairro 2',
+        'cidade': 'Araras',
+        'cep': '12345-001',
+        'tipo': 'Apartamento',
+        'valor': 360000.0,
+        'data_aquisicao': '2023-02-10'
+        },
+        {
+        'id': 2,
+        'logradouro': 'Rua 3',
+        'tipo_logradouro': 'Rua',
+        'bairro': 'Bairro 3',
+        'cidade': 'Araras',
+        'cep': '12345-002',
+        'tipo': 'Apartamento',
+        'valor': 370000.0,
+        'data_aquisicao': '2023-03-10'
+    }]}
+        
     assert response.get_json() == expected_response
     
     
@@ -57,20 +84,53 @@ def test_get_imoveis(mock_connect_db, client):
 
 @pytest.mark.parametrize(
     'imovel_id, esperado, mock_result',
-    [
-        (0, {'id': 0, 'tipo': 'Apartamento', 'Rua': 'Rua 1', 'Numero': 'Nº 1', 'Bairro': 'Bairro 1', 'Cidade': 'Araras', 'Estado': 'SP'},
-            [(0, 'Apartamento', "Rua 1", "Nº 1", "Bairro 1", "Araras", "SP")]),
-        (1, {'id': 1, 'tipo': 'Apartamento', 'Rua': 'Rua 2', 'Numero': 'Nº 2', 'Bairro': 'Bairro 2', 'Cidade': 'Araras', 'Estado': 'SP'},
-            [(1, 'Apartamento', "Rua 2", "Nº 2", "Bairro 2", "Araras", "SP")]),
-        (2, {'id': 2, 'tipo': 'Apartamento', 'Rua': 'Rua 3', 'Numero': 'Nº 3', 'Bairro': 'Bairro 3', 'Cidade': 'Araras', 'Estado': 'SP'},
-            [(2, 'Apartamento', "Rua 3", "Nº 3", "Bairro 3", "Araras", "SP")]),
-    ]
-)
+    [(0, 
+        {
+            'id': 0,
+            'logradouro': 'Rua 1',
+            'tipo_logradouro': 'Rua',
+            'bairro': 'Bairro 1',
+            'cidade': 'Araras',
+            'cep': '12345-000',
+            'tipo': 'Apartamento',
+            'valor': 350000.0,
+            'data_aquisicao': '2023-01-10'
+        },
+        [(0, 'Rua 1', 'Rua', 'Bairro 1', 'Araras', '12345-000', 'Apartamento', 350000.0, '2023-01-10')]
+        ),
+    (1, 
+        {
+            'id': 1,
+            'logradouro': 'Rua 2',
+            'tipo_logradouro': 'Rua',
+            'bairro': 'Bairro 2',
+            'cidade': 'Araras',
+            'cep': '12345-001',
+            'tipo': 'Apartamento',
+            'valor': 360000.0,
+            'data_aquisicao': '2023-02-10'
+        },
+        [(1, 'Rua 2', 'Rua', 'Bairro 2', 'Araras', '12345-001', 'Apartamento', 360000.0, '2023-02-10')]
+        ),
+    (2, 
+        {
+            'id': 2,
+            'logradouro': 'Rua 3',
+            'tipo_logradouro': 'Rua',
+            'bairro': 'Bairro 3',
+            'cidade': 'Araras',
+            'cep': '12345-002',
+            'tipo': 'Apartamento',
+            'valor': 370000.0,
+            'data_aquisicao': '2023-03-10'
+        },
+        [(2, 'Rua 3', 'Rua', 'Bairro 3', 'Araras', '12345-002', 'Apartamento', 370000.0, '2023-03-10')]
+        )])
 
-@patch('utils.connect_db') # Ou seja, a função a ser substituída é, no arquivo api.py, a 'connect_db'
+@patch('utils.connect_db')
 
 def test_get_imovel(mock_connect_db, client, imovel_id, esperado, mock_result):
-    mock_conn = MagicMock()
+    mock_conn = MagicMock() # Confirmar com o professor se eu preciso criar tudo isso de novo
     mock_cursor = MagicMock()
     mock_conn.cursor.return_value = mock_cursor
     
