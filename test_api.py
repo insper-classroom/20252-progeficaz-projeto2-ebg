@@ -2,7 +2,7 @@ import pytest
 from api import app
 from utils import connect_db
 from unittest.mock import patch, MagicMock
-
+from utils import Imovel
 
 # 1. FIXTURE
 @pytest.fixture
@@ -30,7 +30,7 @@ def test_get_imoveis(mock_connect_db, client):
     
     # Simulando um banco de dados
     mock_cursor.fetchall.return_value = [
-    (0, 'Rua 1', 'Rua', 'Bairro 1', 'Araras', '12345-000', 'Apartamento', 350000.0, '2023-01-10'),
+    (0, 'Rua 1', 'Rua', 'Bairro 1', 'Araras', '12345-000', 'Apartamento', 100.0, '2023-01-10'),
     (1, 'Rua 2', 'Rua', 'Bairro 2', 'Araras', '12345-001', 'Apartamento', 360000.0, '2023-02-10'),
     (2, 'Rua 3', 'Rua', 'Bairro 3', 'Araras', '12345-002', 'Apartamento', 370000.0, '2023-03-10')]
     
@@ -81,51 +81,68 @@ def test_get_imoveis(mock_connect_db, client):
     
 # ========================================================================================== 2. GET/<ID> ==========================================================================================
 
-
 @pytest.mark.parametrize(
     'imovel_id, esperado, mock_result',
-    [(0, 
-        {
-            'id': 0,
-            'logradouro': 'Rua 1',
-            'tipo_logradouro': 'Rua',
-            'bairro': 'Bairro 1',
-            'cidade': 'Araras',
-            'cep': '12345-000',
-            'tipo': 'Apartamento',
-            'valor': 350000.0,
-            'data_aquisicao': '2023-01-10'
-        },
-        [(0, 'Rua 1', 'Rua', 'Bairro 1', 'Araras', '12345-000', 'Apartamento', 350000.0, '2023-01-10')]
+    [
+        (0,
+            {'id': 0,
+                'logradouro': 'Rua 1',
+                'tipo_logradouro': 'Rua',
+                'bairro': 'Bairro 1',
+                'cidade': 'Araras',
+                'cep': '12345-000',
+                'tipo': 'Apartamento',
+                'valor': 100.0,
+                'data_aquisicao': '2023-01-10'},
+            (0,
+                'Rua 1',
+                'Rua',
+                'Bairro 1',
+                'Araras',
+                '12345-000',
+                'Apartamento',
+                100.0,
+                '2023-01-10')
         ),
-    (1, 
-        {
-            'id': 1,
-            'logradouro': 'Rua 2',
-            'tipo_logradouro': 'Rua',
-            'bairro': 'Bairro 2',
-            'cidade': 'Araras',
-            'cep': '12345-001',
-            'tipo': 'Apartamento',
-            'valor': 360000.0,
-            'data_aquisicao': '2023-02-10'
-        },
-        [(1, 'Rua 2', 'Rua', 'Bairro 2', 'Araras', '12345-001', 'Apartamento', 360000.0, '2023-02-10')]
+        (1,
+            {'id': 1,
+                'logradouro': 'Rua 2',
+                'tipo_logradouro': 'Rua',
+                'bairro': 'Bairro 2',
+                'cidade': 'Araras',
+                'cep': '12345-001',
+                'tipo': 'Apartamento',
+                'valor': 360000.0,
+                'data_aquisicao': '2023-02-10'},
+            (1,'Rua 2',
+                'Rua',
+                'Bairro 2',
+                'Araras',
+                '12345-001',
+                'Apartamento',
+                360000.0,
+                '2023-02-10')
         ),
-    (2, 
-        {
-            'id': 2,
-            'logradouro': 'Rua 3',
-            'tipo_logradouro': 'Rua',
-            'bairro': 'Bairro 3',
-            'cidade': 'Araras',
-            'cep': '12345-002',
-            'tipo': 'Apartamento',
-            'valor': 370000.0,
-            'data_aquisicao': '2023-03-10'
-        },
-        [(2, 'Rua 3', 'Rua', 'Bairro 3', 'Araras', '12345-002', 'Apartamento', 370000.0, '2023-03-10')]
-        )])
+        (2,
+            {'id': 2,
+                'logradouro': 'Rua 3',
+                'tipo_logradouro': 'Rua',
+                'bairro': 'Bairro 3',
+                'cidade': 'Araras',
+                'cep': '12345-002',
+                'tipo': 'Apartamento',
+                'valor': 370000.0,
+                'data_aquisicao': '2023-03-10'},
+            (2,
+                'Rua 3',
+                'Rua',
+                'Bairro 3',
+                'Araras',
+                '12345-002',
+                'Apartamento',
+                370000.0,
+                '2023-03-10')
+            )])
 
 @patch('utils.connect_db')
 
@@ -134,7 +151,7 @@ def test_get_imovel(mock_connect_db, client, imovel_id, esperado, mock_result):
     mock_cursor = MagicMock()
     mock_conn.cursor.return_value = mock_cursor
     
-    mock_cursor.fetchall.return_value = mock_result
+    mock_cursor.fetchone.return_value = mock_result
     
     
     mock_connect_db.return_value = mock_conn

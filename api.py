@@ -2,6 +2,7 @@ from flask import Flask, redirect, request, render_template_string
 import views
 
 
+
 app = Flask(__name__)
 
 
@@ -11,10 +12,13 @@ def index():
     imoveis = views.index()
     return {"imoveis": imoveis}
 
-@app.route(f'/imoveis/{imovel_id}', methods=['GET'])
-def index():
+@app.route('/imoveis/<imovel_id>', methods=['GET'])
+def get_imovel(imovel_id):
     print(request)
-    return 
+    imovel = views.get_imovel(imovel_id) 
+    print(f'/'*50)
+    print('API.PY - GET_IMOVEL')
+    return imovel
 
 
 

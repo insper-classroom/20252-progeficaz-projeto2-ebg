@@ -1,6 +1,7 @@
 import sqlite3
 from dataclasses import dataclass
 
+
 @dataclass
 class Imovel:
     id: int 
@@ -14,10 +15,8 @@ class Imovel:
     data_aquisicao: str
 
 
-
 def connect_db():
     return sqlite3.connect('imoveis.sql')
-
 
 
 def get_imoveis():
@@ -30,31 +29,34 @@ def get_imoveis():
     for row in rows:
         imoveis.append({
             'id': row[0],
-            'tipo': row[1],
-            'Rua': row[2],
-            'Numero': row[3],
-            'Bairro': row[4],
-            'Cidade': row[5],
-            'Estado': row[6]
+            'logradouro': row[1],
+            'tipo_logradouro': row[2],
+            'bairro': row[3],
+            'cidade': row[4],
+            'cep': row[5],
+            'tipo': row[6],
+            'valor': row[7],
+            'data_aquisicao': row[8]
         })
     return imoveis
 
 
-def get_imovel(imovel_id):
+def get_imovel_by_id(imovel_id):
     conn = connect_db()
     cur = conn.cursor()
     cur.execute('SELECT * FROM imoveis WHERE id = ?', (imovel_id,))
-    rows = cur.fetchall()
+    row = cur.fetchone()
+    cur.close()
     conn.close()
-    imovel = []
-    for row in rows:
-        imovel.append({
-            'id': row[0],
-            'tipo': row[1],
-            'Rua': row[2],
-            'Numero': row[3],
-            'Bairro': row[4],
-            'Cidade': row[5],
-            'Estado': row[6]
-        })
-    return imovel
+    print(f'*'*50)
+    print('UTILS.PY - GET_IMOVEL_BY_ID')
+    return Imovel(
+        id=row[0],             
+        logradouro= row[1],
+        tipo_logradouro= row[2],
+        bairro= row[3],
+        cidade= row[4],
+        cep= row[5],
+        tipo= row[6],
+        valor= row[7],
+        data_aquisicao= row[8])
