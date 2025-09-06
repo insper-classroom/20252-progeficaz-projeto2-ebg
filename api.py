@@ -10,9 +10,14 @@ def index():
     print(request)
     imoveis = views.index()
     return {"imoveis": imoveis}
-    
+
+@app.route(f'/imoveis/{imovel_id}', methods=['GET'])
+def index():
+    print(request)
+    return 
 
 
 
 if __name__ == '__main__':
     app.run(debug=True)
+    
