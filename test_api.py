@@ -16,6 +16,9 @@ def client():
         yield client
 
 
+# ========================================================================================== 1. GET ==========================================================================================
+
+
 # 2. PATCH 
 @patch('utils.connect_db') # Ou seja, a função a ser substituída é, no arquivo api.py, a 'connect_db'
 # WHEN 
@@ -27,9 +30,9 @@ def test_get_imoveis(mock_connect_db, client):
     
     # Simulando um banco de dados
     mock_cursor.fetchall.return_value = [
-        (1, 'Apartamento', "Rua 1", "Nº 1", "Bairro 1", "Araras", "SP"),
-        (2, 'Apartamento', "Rua 2", "Nº 2", "Bairro 2", "Araras", "SP"),
-        (3, 'Apartamento', "Rua 3", "Nº 3", "Bairro 3", "Araras", "SP"),
+        (0, 'Apartamento', "Rua 1", "Nº 1", "Bairro 1", "Araras", "SP"),
+        (1, 'Apartamento', "Rua 2", "Nº 2", "Bairro 2", "Araras", "SP"),
+        (2, 'Apartamento', "Rua 3", "Nº 3", "Bairro 3", "Araras", "SP"),
     ]
     
     
@@ -38,17 +41,45 @@ def test_get_imoveis(mock_connect_db, client):
     
     
     # THEN
-    
-    
     assert response.status_code == 200
-
     expected_response = {
         'imoveis': [
-            {'id': 1, 'tipo': 'Apartamento', 'Rua': 'Rua 1', 'Numero': 'Nº 1', 'Bairro': 'Bairro 1', 'Cidade': 'Araras', 'Estado': 'SP'},
-            {'id': 2, 'tipo': 'Apartamento', 'Rua': 'Rua 2', 'Numero': 'Nº 2', 'Bairro': 'Bairro 2', 'Cidade': 'Araras', 'Estado': 'SP'},
-            {'id': 3, 'tipo': 'Apartamento', 'Rua': 'Rua 3', 'Numero': 'Nº 3', 'Bairro': 'Bairro 3', 'Cidade': 'Araras', 'Estado': 'SP'},
+            {'id': 0, 'tipo': 'Apartamento', 'Rua': 'Rua 1', 'Numero': 'Nº 1', 'Bairro': 'Bairro 1', 'Cidade': 'Araras', 'Estado': 'SP'},
+            {'id': 1, 'tipo': 'Apartamento', 'Rua': 'Rua 2', 'Numero': 'Nº 2', 'Bairro': 'Bairro 2', 'Cidade': 'Araras', 'Estado': 'SP'},
+            {'id': 2, 'tipo': 'Apartamento', 'Rua': 'Rua 3', 'Numero': 'Nº 3', 'Bairro': 'Bairro 3', 'Cidade': 'Araras', 'Estado': 'SP'},
         ]
     }
     assert response.get_json() == expected_response
     
     
+# ========================================================================================== 2. GET/<ID> ==========================================================================================
+
+
+@pytest.mark.parametrize(
+    'imovel_id, esperado, mock_result',
+    [
+        (0, {'id': 0, 'tipo': 'Apartamento', 'Rua': 'Rua 1', 'Numero': 'Nº 1', 'Bairro': 'Bairro 1', 'Cidade': 'Araras', 'Estado': 'SP'},
+            [(0, 'Apartamento', "Rua 1", "Nº 1", "Bairro 1", "Araras", "SP")]),
+        (1, {'id': 1, 'tipo': 'Apartamento', 'Rua': 'Rua 2', 'Numero': 'Nº 2', 'Bairro': 'Bairro 2', 'Cidade': 'Araras', 'Estado': 'SP'},
+            [(1, 'Apartamento', "Rua 2", "Nº 2", "Bairro 2", "Araras", "SP")]),
+        (2, {'id': 2, 'tipo': 'Apartamento', 'Rua': 'Rua 3', 'Numero': 'Nº 3', 'Bairro': 'Bairro 3', 'Cidade': 'Araras', 'Estado': 'SP'},
+            [(2, 'Apartamento', "Rua 3", "Nº 3", "Bairro 3", "Araras", "SP")]),
+    ]
+)
+
+@patch('utils.connect_db') # Ou seja, a função a ser substituída é, no arquivo api.py, a 'connect_db'
+
+def test_get_imovel(mock_connect_db, client, imovel_id, esperado, mock_result):
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor
+    
+    mock_cursor.fetchall.return_value = mock_result
+    
+    
+    mock_connect_db.return_value = mock_conn
+    response = client.get(f'/imoveis/{imovel_id}')
+    
+    # THEN
+    assert response.status_code == 200
+    assert response.get_json() == {'imovel': esperado}
