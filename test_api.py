@@ -30,11 +30,11 @@ def test_get_imoveis(mock_connect_db, client):
     
     # Simulando um banco de dados
     mock_cursor.fetchall.return_value = [
-    (0, 'Rua 1', 'Rua', 'Bairro 1', 'Araras', '12345-000', 'Apartamento', 100.0, '2023-01-10'),
+    (0, 'Rua 1', 'Rua', 'Bairro 1', 'Araras', '12345-000', 'Apartamento', 350000.0, '2023-01-10'),
     (1, 'Rua 2', 'Rua', 'Bairro 2', 'Araras', '12345-001', 'Apartamento', 360000.0, '2023-02-10'),
     (2, 'Rua 3', 'Rua', 'Bairro 3', 'Araras', '12345-002', 'Apartamento', 370000.0, '2023-03-10')]
     
-    
+
     mock_connect_db.return_value = mock_conn # Mandamos o Mock ser retornado quando a função for chaamda
     response = client.get('/imoveis')
     
@@ -50,7 +50,7 @@ def test_get_imoveis(mock_connect_db, client):
         'cidade': 'Araras',
         'cep': '12345-000',
         'tipo': 'Apartamento',
-        'valor': 100.0,
+        'valor': 350000.0,
         'data_aquisicao': '2023-01-10'
         },
         {
@@ -92,7 +92,7 @@ def test_get_imoveis(mock_connect_db, client):
                 'cidade': 'Araras',
                 'cep': '12345-000',
                 'tipo': 'Apartamento',
-                'valor': 100.0,
+                'valor': 350000.0,
                 'data_aquisicao': '2023-01-10'},
             (0,
                 'Rua 1',
@@ -101,7 +101,7 @@ def test_get_imoveis(mock_connect_db, client):
                 'Araras',
                 '12345-000',
                 'Apartamento',
-                100.0,
+                350000.0,
                 '2023-01-10')
         ),
         (1,

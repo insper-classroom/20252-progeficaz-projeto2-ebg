@@ -8,11 +8,11 @@
 
 A API deve permitir:
 
-- **Listar todos os imóveis**  
+- CHECK **Listar todos os imóveis**  
   `GET /imoveis`  
   Retorna todos os imóveis cadastrados com todos os seus atributos.
 
-- **Listar um imóvel específico**  
+- CHECK **Listar um imóvel específico**  
   `GET /imoveis/<id>`  
   Retorna um imóvel pelo seu `id` com todos os seus atributos.
 

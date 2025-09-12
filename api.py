@@ -2,7 +2,6 @@ from flask import Flask, redirect, request, render_template_string
 import views
 
 
-
 app = Flask(__name__)
 
 
@@ -10,7 +9,8 @@ app = Flask(__name__)
 def index():
     print(request)
     imoveis = views.index()
-    return {"imoveis": imoveis}
+    imoveis = {"imoveis": imoveis}
+    return render_template_string(views.index())
 
 @app.route('/imoveis/<imovel_id>', methods=['GET'])
 def get_imovel(imovel_id):
@@ -22,6 +22,6 @@ def get_imovel(imovel_id):
 
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
     
