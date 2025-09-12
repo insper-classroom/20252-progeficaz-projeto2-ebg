@@ -19,11 +19,6 @@ config = {
     'ssl_ca': os.getenv('SSL_CA_PATH')  # Caminho para o certificado SSL
 }
 
-def load_template(file_name):
-    with open(file_name, encoding='utf-8') as f:
-        template = f.read()
-    return template
-
 
 @dataclass
 class Imovel:
@@ -64,8 +59,6 @@ def get_imovel_by_id(imovel_id):
     row = cur.fetchone()
     cur.close()
     conn.close()
-    print(f'*'*50)
-    print('UTILS.PY - GET_IMOVEL_BY_ID')
     return Imovel(
         id=row[0],             
         logradouro= row[1],

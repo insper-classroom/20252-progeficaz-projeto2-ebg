@@ -1,21 +1,11 @@
-from utils import get_imoveis, get_imovel_by_id, load_template, get_imoveis
+from utils import get_imoveis, get_imovel_by_id
 from flask import jsonify
     
 def index():
-    imovel_template = load_template('static/templates/components/imovel.html')
-    imoveis_li = [
-        imovel_template.format(id= row[0],
-            logradouro=row[1],
-            tipo_logradouro=row[2],
-            bairro=row[3],
-            cidade=row[4],
-            cep=row[5],
-            tipo=row[6],
-            valor=row[7],
-            data_aquisicao=row[8]) for row in get_imoveis()]
-    imovel = '\n'.join(imoveis_li)
-    return load_template('static/templates/index.html').format(imovel=imovel)
-
+    imoveis = get_imoveis()
+    print('=================================INDEX GET IMOVEIS================================================================')
+    print(imoveis)
+    return imoveis
 
 
 def get_imovel(imovel_id):

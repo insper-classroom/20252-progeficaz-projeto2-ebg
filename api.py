@@ -1,4 +1,4 @@
-from flask import Flask, redirect, request, render_template_string
+from flask import Flask, redirect, request
 import views
 
 
@@ -10,7 +10,7 @@ def index():
     print(request)
     imoveis = views.index()
     imoveis = {"imoveis": imoveis}
-    return render_template_string(views.index())
+    return views.index()
 
 @app.route('/imoveis/<imovel_id>', methods=['GET'])
 def get_imovel(imovel_id):
