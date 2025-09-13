@@ -1,5 +1,6 @@
-from utils import get_imoveis, get_imovel_by_id, add_imovel_to_db, update_data_on_imovel
+from utils import get_imoveis, get_imovel_by_id, add_imovel_to_db, update_data_on_imovel, delete_imovel_from_db
 from flask import jsonify
+    
     
 def index():
     imoveis = get_imoveis()
@@ -18,4 +19,9 @@ def add_imovel(logradouro, tipo_logradouro, bairro, cidade, cep, tipo, valor, da
 
 def update_imovel(imovel, data):
     imoveis = update_data_on_imovel(imovel, data)
+    return jsonify(imoveis)
+
+
+def delete_imovel(imovel):
+    imoveis = delete_imovel_from_db(imovel)
     return jsonify(imoveis)

@@ -17,16 +17,14 @@ def client():
 
 
 # ======================================================================== 1. GET ==========================================================================================
-
-
 # 2. PATCH 
 @patch('utils.connect_db') # Ou seja, a função a ser substituída é, no arquivo api.py, a 'connect_db'
 # WHEN 
 def test_get_imoveis(mock_connect_db, client):
+    # 3. MOCK
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
     mock_conn.cursor.return_value = mock_cursor
-    
     
     # Simulando um banco de dados
     mock_cursor.fetchall.return_value = [
@@ -80,7 +78,6 @@ def test_get_imoveis(mock_connect_db, client):
     
     
 # ==================================================================== 2. GET/<ID> ==========================================================================================
-
 @pytest.mark.parametrize(
     'imovel_id, esperado, mock_result',
     [
@@ -150,10 +147,8 @@ def test_get_imoveis(mock_connect_db, client):
 def test_get_imovel(mock_connect_db, client, imovel_id, esperado, mock_result):
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
-    mock_conn.cursor.return_value = mock_cursor
-    
+    mock_conn.cursor.return_value = mock_cursor    
     mock_cursor.fetchone.return_value = mock_result
-    
     
     mock_connect_db.return_value = mock_conn
     response = client.get(f'/imoveis/{imovel_id}')
@@ -161,7 +156,7 @@ def test_get_imovel(mock_connect_db, client, imovel_id, esperado, mock_result):
     # THEN
     assert response.status_code == 200
     assert response.get_json() == esperado
-
+    
 
 # =================================================================== 3. POST ====================================================================
 @patch('utils.connect_db')
@@ -177,7 +172,6 @@ def test_add_imovel(mock_connect_db, client):
     (1, 'Rua 2', 'Rua', 'Bairro 2', 'Araras', '12345-001', 'Apartamento', 360000.0, '2023-02-10'),
     (2, 'Rua 3', 'Rua', 'Bairro 3', 'Araras', '12345-002', 'Apartamento', 370000.0, '2023-03-10'),
     (3, 'Rua 4', 'Rua', 'Bairro 4', 'Araras', '12345-002', 'Apartamento', 380000.0, '2023-04-10')]
-    
     
     mock_connect_db.return_value = mock_conn
     
@@ -241,17 +235,13 @@ def test_add_imovel(mock_connect_db, client):
         'data_aquisicao': '2023-04-10'
         }
         ]
-
         
     assert response.get_json() == expected_response
     
 
 # ============================================================================ 4. PUT ==========================================================================
-
-
 @pytest.mark.parametrize("imovel_id, update_data, esperado", [
-    (
-        0,
+    (0,
         {"valor": 400000.0},
         (0, "Rua 1", "Rua", "Bairro 1", "Araras", "12345-000", "Apartamento", 400000.0, "2023-01-10")
     ),
@@ -271,6 +261,7 @@ def test_add_imovel(mock_connect_db, client):
         (3, "Rua 4", "Rua", "Bairro 4", "Araras", "99999-999", "Apartamento", 300000.0, "2023-04-10")
     ),
 ])
+
 @patch("utils.connect_db")
 def test_update_imovel(mock_connect_db, imovel_id, update_data, esperado, client):
     mock_conn = MagicMock()

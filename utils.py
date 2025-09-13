@@ -115,3 +115,13 @@ def update_data_on_imovel(imovel, data):
     conn.close()
     imoveis_atualizado = get_imoveis()
     return imoveis_atualizado
+
+def delete_imovel_from_db(imovel_id):
+    conn = connect_db()
+    cur = conn.cursor()
+    cur.execute('DELETE FROM imoveis WHERE id = %s', (imovel_id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    imoveis_atualizado = get_imoveis()
+    return imoveis_atualizado

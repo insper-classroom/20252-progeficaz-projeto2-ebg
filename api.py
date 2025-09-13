@@ -42,6 +42,13 @@ def update_imovel(imovel_id):
     
     imoveis = views.update_imovel(imovel_id, data)
     return imoveis
+
+
+@app.route('/imoveis/<int:imovel_id>', methods=['DELETE'])
+def delete_imovel(imovel_id):
+    print(request)
+    imoveis = views.delete_imovel(imovel_id)
+    return imoveis
     
 
 if __name__ == "__main__":
