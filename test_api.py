@@ -167,18 +167,35 @@ def test_get_imovel(mock_connect_db, client, imovel_id, esperado, mock_result):
 @patch('utils.connect_db')
 
 # WHEN 
-def test_add_imovel(mock_connect_db, client, mock_result):
+def test_add_imovel(mock_connect_db, client):
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
     mock_conn.cursor.return_value = mock_cursor
     
-    mock_cursor.fetchone.return_value = mock_result
-    response = client.post('/imoveis', Imovel(4, 'Rua 4', 'Rua', 'Bairro 4', 'Araras', '12345-000', 'Apartamento', 370000.0, '2023-04-10')
-         )
+    mock_cursor.fetchall.return_value = [
+    (0, 'Rua 1', 'Rua', 'Bairro 1', 'Araras', '12345-000', 'Apartamento', 350000.0, '2023-01-10'),
+    (1, 'Rua 2', 'Rua', 'Bairro 2', 'Araras', '12345-001', 'Apartamento', 360000.0, '2023-02-10'),
+    (2, 'Rua 3', 'Rua', 'Bairro 3', 'Araras', '12345-002', 'Apartamento', 370000.0, '2023-03-10'),
+    (3, 'Rua 4', 'Rua', 'Bairro 4', 'Araras', '12345-002', 'Apartamento', 380000.0, '2023-04-10')]
+    
+    
+    mock_connect_db.return_value = mock_conn
+    
+    response = client.post('/imoveis', json={
+        'logradouro': 'Rua 4',
+        'tipo_logradouro': 'Rua',
+        'bairro': 'Bairro 4',
+        'cidade': 'Araras',
+        'cep': '12345-002',
+        'tipo': 'Apartamento',
+        'valor': 380000.0,
+        'data_aquisicao': '2023-04-10'
+    }
+)
     
     # THEN
     assert response.status_code == 200
-    expected_response = {'imoveis': [
+    expected_response = [
         {
         'id': 0,
         'logradouro': 'Rua 1',
@@ -223,6 +240,7 @@ def test_add_imovel(mock_connect_db, client, mock_result):
         'valor': 380000.0,
         'data_aquisicao': '2023-04-10'
         }
-        ]}
+        ]
+
         
     assert response.get_json() == expected_response

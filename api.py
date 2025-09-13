@@ -19,7 +19,21 @@ def get_imovel(imovel_id):
     return imovel
 
 
-
+@app.route('/imoveis', methods=['POST'])
+def add_imovel():
+    print(request)
+    
+    data = request.get_json()
+    logradouro = data['logradouro']
+    tipo_logradouro = data['tipo_logradouro']
+    bairro = data['bairro']
+    cidade = data['cidade']
+    cep = data['cep']
+    tipo = data['tipo']
+    valor = data['valor']
+    data_aquisicao = data['data_aquisicao']
+    imoveis = views.add_imovel(logradouro, tipo_logradouro, bairro, cidade, cep, tipo, valor, data_aquisicao)
+    return imoveis
     
 
 

@@ -67,8 +67,6 @@ def get_imoveis():
     return imoveis
 
 
-
-
 def get_imovel_by_id(imovel_id):
     conn = connect_db()
     cur = conn.cursor()
@@ -88,3 +86,20 @@ def get_imovel_by_id(imovel_id):
         tipo= row[6],
         valor= row[7],
         data_aquisicao= row[8])
+    
+
+def add_imovel_to_db(logradouro, tipo_logradouro, bairro, cidade, cep, tipo, valor, data_aquisicao):
+    try:
+        conn = connect_db()
+        cur = conn.cursor()
+        cur.execute('INSERT INTO imoveis (logradouro, tipo_logradouro, bairro, cidade, cep, tipo, valor, data_aquisicao) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (logradouro, tipo_logradouro, bairro, cidade, cep, tipo, valor, data_aquisicao))
+        print("Commitando...")
+        conn.commit()
+        cur.close()
+        conn.close()
+        print("Buscando imóveis atualizados...")
+        imoveis_atualizado = get_imoveis()
+        return imoveis_atualizado
+    except Exception as e:
+            print("ERRO AO INSERIR:", e)
+            raise
