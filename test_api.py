@@ -26,6 +26,7 @@ def test_get_imoveis(mock_connect_db, client):
     mock_cursor = MagicMock()
     mock_conn.cursor.return_value = mock_cursor
     
+    
     # Simulando um banco de dados
     mock_cursor.fetchall.return_value = [
     (0, 'Rua 1', 'Rua', 'Bairro 1', 'Araras', '12345-000', 'Apartamento', 350000.0, '2023-01-10'),
@@ -332,3 +333,42 @@ def test_delete_imovel(mock_connect_db, imovel_id, antes, depois, esperado, clie
     ids_retornados = [imovel["id"] for imovel in data]
     ids_esperados = [im[0] for im in depois]
     assert ids_retornados == ids_esperados
+
+
+# ==================================================================== 6. GET/<TIPO> ==========================================================================================
+@pytest.mark.parametrize('tipo, esperado', [
+    (
+        'Apartamento',
+        [
+            {'id': 0, 'logradouro': 'Rua 1', 'tipo_logradouro': 'Rua', 'bairro': 'Bairro 1', 'cidade': 'Araras', 'cep': '12345-000', 'tipo': 'Apartamento', 'valor': 350000.0, 'data_aquisicao': '2023-01-10'},
+            {'id': 1, 'logradouro': 'Rua 2', 'tipo_logradouro': 'Rua', 'bairro': 'Bairro 2', 'cidade': 'Araras', 'cep': '12345-001', 'tipo': 'Apartamento', 'valor': 360000.0, 'data_aquisicao': '2023-02-10'},
+        ]
+    ),
+    (
+        'Casa',
+        [
+            {'id': 2, 'logradouro': 'Rua 3', 'tipo_logradouro': 'Rua', 'bairro': 'Bairro 3', 'cidade': 'Araras', 'cep': '12345-002', 'tipo': 'Casa', 'valor': 370000.0, 'data_aquisicao': '2023-03-10'},
+            {'id': 3, 'logradouro': 'Rua 4', 'tipo_logradouro': 'Rua', 'bairro': 'Bairro 4', 'cidade': 'Araras', 'cep': '12345-002', 'tipo': 'Casa', 'valor': 380000.0, 'data_aquisicao': '2023-04-10'}
+        ]
+    ),
+])
+
+
+@patch('utils.connect_db')
+def test_get_imovel_by_type(mock_connect_db, client, tipo, esperado):
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor
+
+
+    chaves = list(esperado[0].keys())
+    mock_result = [tuple(imovel[k] for k in chaves) for imovel in esperado]
+
+
+    mock_cursor.fetchall.return_value = mock_result
+    mock_connect_db.return_value = mock_conn
+    response = client.get(f'/imoveis/tipo/{tipo}')
+
+
+    assert response.status_code == 200
+    assert response.get_json() == esperado
