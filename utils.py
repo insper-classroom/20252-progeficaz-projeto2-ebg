@@ -89,17 +89,29 @@ def get_imovel_by_id(imovel_id):
     
 
 def add_imovel_to_db(logradouro, tipo_logradouro, bairro, cidade, cep, tipo, valor, data_aquisicao):
-    try:
-        conn = connect_db()
-        cur = conn.cursor()
-        cur.execute('INSERT INTO imoveis (logradouro, tipo_logradouro, bairro, cidade, cep, tipo, valor, data_aquisicao) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (logradouro, tipo_logradouro, bairro, cidade, cep, tipo, valor, data_aquisicao))
-        print("Commitando...")
-        conn.commit()
-        cur.close()
-        conn.close()
-        print("Buscando imóveis atualizados...")
-        imoveis_atualizado = get_imoveis()
-        return imoveis_atualizado
-    except Exception as e:
-            print("ERRO AO INSERIR:", e)
-            raise
+    conn = connect_db()
+    cur = conn.cursor()
+    cur.execute('INSERT INTO imoveis (logradouro, tipo_logradouro, bairro, cidade, cep, tipo, valor, data_aquisicao) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (logradouro, tipo_logradouro, bairro, cidade, cep, tipo, valor, data_aquisicao))
+    conn.commit()
+    cur.close()
+    conn.close()
+    imoveis_atualizado = get_imoveis()
+    return imoveis_atualizado
+
+        
+def update_data_on_imovel(imovel, data):
+    conn = connect_db()
+    cur = conn.cursor()
+    
+    # Definindo qual é o campo que vamos alterar
+    set_clause = ", ".join([f"{campo} = %s" for campo in data.keys()])
+    values = list(data.values())
+    values.append(imovel)
+
+    sql = f"UPDATE imoveis SET {set_clause} WHERE id = %s"
+    cur.execute(sql, values)
+    conn.commit()
+    cur.close()
+    conn.close()
+    imoveis_atualizado = get_imoveis()
+    return imoveis_atualizado

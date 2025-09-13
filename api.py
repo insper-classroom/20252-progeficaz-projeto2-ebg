@@ -22,7 +22,6 @@ def get_imovel(imovel_id):
 @app.route('/imoveis', methods=['POST'])
 def add_imovel():
     print(request)
-    
     data = request.get_json()
     logradouro = data['logradouro']
     tipo_logradouro = data['tipo_logradouro']
@@ -36,7 +35,14 @@ def add_imovel():
     return imoveis
     
 
-
+@app.route('/imoveis/<int:imovel_id>', methods=['PUT'])
+def update_imovel(imovel_id):
+    print(request)
+    data = request.get_json()
+    
+    imoveis = views.update_imovel(imovel_id, data)
+    return imoveis
+    
 
 if __name__ == "__main__":
     app.run(debug=True)
