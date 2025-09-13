@@ -16,7 +16,7 @@ def client():
         yield client
 
 
-# ========================================================================================== 1. GET ==========================================================================================
+# ======================================================================== 1. GET ==========================================================================================
 
 
 # 2. PATCH 
@@ -79,7 +79,7 @@ def test_get_imoveis(mock_connect_db, client):
     assert response.get_json() == expected_response
     
     
-# ========================================================================================== 2. GET/<ID> ==========================================================================================
+# ==================================================================== 2. GET/<ID> ==========================================================================================
 
 @pytest.mark.parametrize(
     'imovel_id, esperado, mock_result',
@@ -163,7 +163,7 @@ def test_get_imovel(mock_connect_db, client, imovel_id, esperado, mock_result):
     assert response.get_json() == esperado
 
 
-# ========================================================================================== 3. POST - ADICIONAR NOVO IMÓVEL ==========================================================================================
+# =================================================================== 3. POST ====================================================================
 @patch('utils.connect_db')
 
 # WHEN 
@@ -246,9 +246,8 @@ def test_add_imovel(mock_connect_db, client):
     assert response.get_json() == expected_response
     
 
-# ========================================================================================== 4. PUT - MODIFICAR INFORMAÇÕES ==========================================================================================
-import pytest
-from unittest.mock import patch, MagicMock
+# ============================================================================ 4. PUT ==========================================================================
+
 
 @pytest.mark.parametrize("imovel_id, update_data, esperado", [
     (
@@ -307,3 +306,38 @@ def test_update_imovel(mock_connect_db, imovel_id, update_data, esperado, client
     assert atualizado["tipo"] == esperado[6]
     assert atualizado["valor"] == esperado[7]
     assert atualizado["data_aquisicao"] == esperado[8]
+
+
+# =============================================================== 5. DELETE ==============================================================
+@pytest.mark.parametrize("imovel_id, antes, depois, esperado", [
+    (
+        1, [
+        (0, "Rua 1", "Rua", "Bairro 1", "Araras", "12345-000", "Apartamento", 400000.0, "2023-01-10"),
+        (1, "Rua 2", "Rua", "Bairro 2", "Araras", "12345-001", "Apartamento", 360000.0, "2023-02-10"),
+        (2, "Rua 3", "Rua", "Bairro 3", "Araras", "12345-002", "Apartamento", 370000.0, "2023-03-10")
+        ],
+        [
+        (0, "Rua 1", "Rua", "Bairro 1", "Araras", "12345-000", "Apartamento", 400000.0, "2023-01-10"),
+        (2, "Rua 3", "Rua", "Bairro 3", "Araras", "12345-002", "Apartamento", 370000.0, "2023-03-10")], 
+        200)])
+
+
+@patch("utils.connect_db")
+def test_delete_imovel(mock_connect_db, imovel_id, antes, depois, esperado, client):
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor
+
+
+    mock_cursor.fetchall = [antes, depois]
+    mock_connect_db.return_value = mock_conn
+
+
+    response = client.delete(f"/imoveis/{imovel_id}")
+    assert response.status_code == 200
+
+
+    data = response.get_json()
+    ids_retornados = [imovel["id"] for imovel in data]
+    ids_esperados = [im[0] for im in depois]
+    assert ids_retornados == ids_esperados
