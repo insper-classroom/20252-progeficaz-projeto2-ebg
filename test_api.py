@@ -41,7 +41,7 @@ def test_get_imoveis(mock_connect_db, client):
     
     # THEN
     assert response.status_code == 200
-    expected_response = {'imoveis': [
+    expected_response = [
         {
         'id': 0,
         'logradouro': 'Rua 1',
@@ -74,7 +74,7 @@ def test_get_imoveis(mock_connect_db, client):
         'tipo': 'Apartamento',
         'valor': 370000.0,
         'data_aquisicao': '2023-03-10'
-    }]}
+    }]
         
     assert response.get_json() == expected_response
     
@@ -146,8 +146,9 @@ def test_get_imoveis(mock_connect_db, client):
 
 @patch('utils.connect_db')
 
+# WHEN 
 def test_get_imovel(mock_connect_db, client, imovel_id, esperado, mock_result):
-    mock_conn = MagicMock() # Confirmar com o professor se eu preciso criar tudo isso de novo
+    mock_conn = MagicMock()
     mock_cursor = MagicMock()
     mock_conn.cursor.return_value = mock_cursor
     
@@ -159,4 +160,69 @@ def test_get_imovel(mock_connect_db, client, imovel_id, esperado, mock_result):
     
     # THEN
     assert response.status_code == 200
-    assert response.get_json() == {'imovel': esperado}
+    assert response.get_json() == esperado
+
+
+# ========================================================================================== 3. ADICIONAR NOVO IMÓVEL ==========================================================================================
+@patch('utils.connect_db')
+
+# WHEN 
+def test_add_imovel(mock_connect_db, client, mock_result):
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor
+    
+    mock_cursor.fetchone.return_value = mock_result
+    response = client.post('/imoveis', Imovel(4, 'Rua 4', 'Rua', 'Bairro 4', 'Araras', '12345-000', 'Apartamento', 370000.0, '2023-04-10')
+         )
+    
+    # THEN
+    assert response.status_code == 200
+    expected_response = {'imoveis': [
+        {
+        'id': 0,
+        'logradouro': 'Rua 1',
+        'tipo_logradouro': 'Rua',
+        'bairro': 'Bairro 1',
+        'cidade': 'Araras',
+        'cep': '12345-000',
+        'tipo': 'Apartamento',
+        'valor': 350000.0,
+        'data_aquisicao': '2023-01-10'
+        },
+        {
+        'id': 1,
+        'logradouro': 'Rua 2',
+        'tipo_logradouro': 'Rua',
+        'bairro': 'Bairro 2',
+        'cidade': 'Araras',
+        'cep': '12345-001',
+        'tipo': 'Apartamento',
+        'valor': 360000.0,
+        'data_aquisicao': '2023-02-10'
+        },
+        {
+        'id': 2,
+        'logradouro': 'Rua 3',
+        'tipo_logradouro': 'Rua',
+        'bairro': 'Bairro 3',
+        'cidade': 'Araras',
+        'cep': '12345-002',
+        'tipo': 'Apartamento',
+        'valor': 370000.0,
+        'data_aquisicao': '2023-03-10'
+        },
+        {
+        'id': 3,
+        'logradouro': 'Rua 4',
+        'tipo_logradouro': 'Rua',
+        'bairro': 'Bairro 4',
+        'cidade': 'Araras',
+        'cep': '12345-002',
+        'tipo': 'Apartamento',
+        'valor': 380000.0,
+        'data_aquisicao': '2023-04-10'
+        }
+        ]}
+        
+    assert response.get_json() == expected_response

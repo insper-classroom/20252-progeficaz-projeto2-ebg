@@ -8,7 +8,6 @@ import os
 
 load_dotenv()
 
-print("oi", os.getenv('SSL_CA_PATH'))
 # Configurações para conexão com o banco de dados usando variáveis de ambiente
 config = {
     'host': os.getenv('DB_HOST'),  # Obtém o host do banco de dados da variável de ambiente
@@ -47,7 +46,25 @@ def get_imoveis():
     conn = connect_db()
     cur = conn.cursor()
     cur.execute('SELECT * FROM imoveis')
-    return cur.fetchall()
+    imoveis_rows = cur.fetchall()
+    cur.close()
+    conn.close()
+    
+    # Armazenando os imóveis em dataclasses e elas em dicionários
+    imoveis = []
+    for row in imoveis_rows:
+        imovel = Imovel(
+            id=row[0],             
+            logradouro= row[1],
+            tipo_logradouro= row[2],
+            bairro= row[3],
+            cidade= row[4],
+            cep= row[5],
+            tipo= row[6],
+            valor= row[7],
+            data_aquisicao= row[8])
+        imoveis.append(imovel.__dict__)
+    return imoveis
 
 
 
@@ -55,10 +72,12 @@ def get_imoveis():
 def get_imovel_by_id(imovel_id):
     conn = connect_db()
     cur = conn.cursor()
-    cur.execute('SELECT * FROM imoveis WHERE id = ?', (imovel_id,))
+    cur.execute('SELECT * FROM imoveis WHERE id = %s', (imovel_id,))
     row = cur.fetchone()
     cur.close()
     conn.close()
+    
+    # Retornando o imóvel em dataclass
     return Imovel(
         id=row[0],             
         logradouro= row[1],

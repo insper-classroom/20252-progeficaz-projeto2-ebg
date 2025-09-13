@@ -9,16 +9,18 @@ app = Flask(__name__)
 def index():
     print(request)
     imoveis = views.index()
-    imoveis = {"imoveis": imoveis}
-    return views.index()
+    return imoveis
+
 
 @app.route('/imoveis/<imovel_id>', methods=['GET'])
 def get_imovel(imovel_id):
     print(request)
     imovel = views.get_imovel(imovel_id) 
-    print(f'/'*50)
-    print('API.PY - GET_IMOVEL')
     return imovel
+
+
+
+    
 
 
 
