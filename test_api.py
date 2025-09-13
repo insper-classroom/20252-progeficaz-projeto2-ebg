@@ -163,7 +163,7 @@ def test_get_imovel(mock_connect_db, client, imovel_id, esperado, mock_result):
     assert response.get_json() == esperado
 
 
-# ========================================================================================== 3. ADICIONAR NOVO IMÓVEL ==========================================================================================
+# ========================================================================================== 3. POST - ADICIONAR NOVO IMÓVEL ==========================================================================================
 @patch('utils.connect_db')
 
 # WHEN 
@@ -244,3 +244,66 @@ def test_add_imovel(mock_connect_db, client):
 
         
     assert response.get_json() == expected_response
+    
+
+# ========================================================================================== 4. PUT - MODIFICAR INFORMAÇÕES ==========================================================================================
+import pytest
+from unittest.mock import patch, MagicMock
+
+@pytest.mark.parametrize("imovel_id, update_data, esperado", [
+    (
+        0,
+        {"valor": 400000.0},
+        (0, "Rua 1", "Rua", "Bairro 1", "Araras", "12345-000", "Apartamento", 400000.0, "2023-01-10")
+    ),
+    (
+        1,
+        {"logradouro": "Avenida Brasil"},
+        (1, "Avenida Brasil", "Rua", "Bairro 2", "Araras", "12345-001", "Apartamento", 360000.0, "2023-02-10")
+    ),
+    (
+        2,
+        {"bairro": "Centro"},
+        (2, "Rua 3", "Rua", "Centro", "Araras", "12345-002", "Apartamento", 370000.0, "2023-03-10")
+    ),
+    (
+        3,
+        {"cep": "99999-999"},
+        (3, "Rua 4", "Rua", "Bairro 4", "Araras", "99999-999", "Apartamento", 300000.0, "2023-04-10")
+    ),
+])
+@patch("utils.connect_db")
+def test_update_imovel(mock_connect_db, imovel_id, update_data, esperado, client):
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor
+
+    # Estado esperado após update
+    mock_cursor.fetchall.return_value = [
+        (0, "Rua 1", "Rua", "Bairro 1", "Araras", "12345-000", "Apartamento", 400000.0, "2023-01-10"),
+        (1, "Avenida Brasil", "Rua", "Bairro 2", "Araras", "12345-001", "Apartamento", 360000.0, "2023-02-10"),
+        (2, "Rua 3", "Rua", "Centro", "Araras", "12345-002", "Apartamento", 370000.0, "2023-03-10"),
+        (3, "Rua 4", "Rua", "Bairro 4", "Araras", "99999-999", "Apartamento", 300000.0, "2023-04-10"),
+    ]
+
+    mock_connect_db.return_value = mock_conn
+
+    response = client.put(f"/imoveis/{imovel_id}", json=update_data)
+    assert response.status_code == 200
+
+    data = response.get_json()
+    atualizado = None
+    for imovel in data:
+        if imovel["id"] == imovel_id:
+            atualizado = imovel
+            break
+
+    assert atualizado["id"] == esperado[0]
+    assert atualizado["logradouro"] == esperado[1]
+    assert atualizado["tipo_logradouro"] == esperado[2]
+    assert atualizado["bairro"] == esperado[3]
+    assert atualizado["cidade"] == esperado[4]
+    assert atualizado["cep"] == esperado[5]
+    assert atualizado["tipo"] == esperado[6]
+    assert atualizado["valor"] == esperado[7]
+    assert atualizado["data_aquisicao"] == esperado[8]
