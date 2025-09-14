@@ -1,58 +1,65 @@
 # Programação Eficaz - Projeto 2
 
-# Projeto: API de Gestão de Imóveis
+## Projeto: API de Gestão de Imóveis
 
-## Descrição
+### Descrição
 
-## Funcionalidades e Rotas
+API RESTful para uma empresa imobiliária, desenvolvida em Flask, que permite cadastrar, listar, atualizar, remover e filtrar imóveis em um banco de dados MySQL hospedado na Aiven. O projeto segue princípios de TDD e foi deployado em uma instância EC2 na AWS.
 
-A API deve permitir:
+---
 
-- CHECK **Listar todos os imóveis**  
-  `GET /imoveis`  
-  Retorna todos os imóveis cadastrados com todos os seus atributos.
+### Link da API
 
-- CHECK **Listar um imóvel específico**  
-  `GET /imoveis/<id>`  
-  Retorna um imóvel pelo seu `id` com todos os seus atributos.
+Acesse a API em:  
+**[https://SEU-LINK-AQUI.com](https://SEU-LINK-AQUI.com)**  
 
+---
+
+### Funcionalidades e Rotas
+
+A API permite:
+
+- **Listar todos os imóveis**  
+  `GET /imoveis`
+- **Listar um imóvel específico**  
+  `GET /imoveis/<id>`
 - **Adicionar um novo imóvel**  
-  `POST /imoveis`  
-  Adiciona um novo imóvel ao banco de dados.
-
+  `POST /imoveis`
 - **Atualizar um imóvel existente**  
-  `PUT /imoveis/<id>`  
-  Atualiza os dados de um imóvel já existente.
-
+  `PUT /imoveis/<id>`
 - **Remover um imóvel existente**  
-  `DELETE /imoveis/<id>`  
-  Remove um imóvel do banco de dados.
-
+  `DELETE /imoveis/<id>`
 - **Listar imóveis por tipo**  
-  `GET /imoveis/tipo/<tipo>`  
-  Lista todos os imóveis de um determinado tipo (ex: casa, apartamento, terreno).
-
+  `GET /imoveis/tipo/<tipo>`
 - **Listar imóveis por cidade**  
-  `GET /imoveis/cidade/<cidade>`  
-  Lista todos os imóveis localizados em uma determinada cidade.
+  `GET /imoveis/cidade/<cidade>`
 
 ---
 
-## Testes Automatizados
+### Testes Automatizados
 
-- Devem ser implementados **testes automatizados para todas as rotas** utilizando, por exemplo, `pytest` ou `unittest`.
-- Os testes devem ser escritos **antes da implementação das rotas**, seguindo o princípio de TDD.
-
----
-
-## Banco de Dados
-
-- Utilizar **MySQL** hospedado na plataforma **Aiven**.
-- Para gerar a estrutura do banco de dados, utilize o script SQL disponível.
+- Todos os endpoints possuem testes automatizados, escritos **antes da implementação** das rotas (TDD), utilizando `pytest`.
 
 ---
 
-## Deploy
+### Banco de Dados
 
-- O projeto deve ser **deployado em uma instância EC2 da AWS**.
-- Certifique-se de configurar variáveis de ambiente para os dados sensíveis (ex: conexão com o banco).
+- **MySQL** hospedado na plataforma **Aiven**.
+- Estrutura do banco criada via script SQL disponível no Handout.
+
+---
+
+### Deploy
+
+- Deploy realizado em uma instância **EC2 da AWS**.
+- Variáveis sensíveis (ex: dados de conexão) configuradas por variáveis de ambiente.
+
+---
+
+### Como executar localmente
+To be written
+
+
+### Sobre
+Projeto para a disciplina Programação Eficaz - Insper (2025/2).
+Desenvolvido por Emily de Britto Gomes

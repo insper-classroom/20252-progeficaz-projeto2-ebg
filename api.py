@@ -4,7 +4,7 @@ import views
 
 app = Flask(__name__)
 
-
+# ROTAS
 @app.route('/imoveis', methods=['GET'])
 def index():
     print(request)
@@ -39,7 +39,6 @@ def add_imovel():
 def update_imovel(imovel_id):
     print(request)
     data = request.get_json()
-    
     imoveis = views.update_imovel(imovel_id, data)
     return imoveis
 
@@ -65,5 +64,6 @@ def get_imoveis_by_city(city):
     return imoveis
 
 
+# EXECUÇÃO
 if __name__ == "__main__":
     app.run(debug=True)

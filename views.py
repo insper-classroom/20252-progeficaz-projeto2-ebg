@@ -2,7 +2,11 @@ from utils import get_imoveis, get_imovel_by_id, add_imovel_to_db, update_data_o
 from flask import jsonify
 from hypermedia import *
     
-    
+'''
+Trata os erros e chama as funções que manipulam o banco de dados.
+Para tal, passa como argumentos as infos necessárias para cada função e coloca o retorno delas em JSON para o retorno da API.
+'''
+
 def index():
     imoveis = get_imoveis()
     for imovel in imoveis:
@@ -23,13 +27,11 @@ def get_imovel(imovel_id):
     return jsonify(imovel_dict), 200
 
 
-
 def add_imovel(logradouro, tipo_logradouro, bairro, cidade, cep, tipo, valor, data_aquisicao):
     novo_imovel = add_imovel_to_db(logradouro, tipo_logradouro, bairro, cidade, cep, tipo, valor, data_aquisicao)
     imovel_dict = novo_imovel.__dict__
     imovel_dict["links"] = imovel_links(novo_imovel)
     return jsonify(imovel_dict), 201
-
 
 
 def update_imovel(imovel_id, data):
@@ -40,7 +42,6 @@ def update_imovel(imovel_id, data):
     imovel_dict = imovel_atualizado.__dict__
     imovel_dict["links"] = imovel_links(imovel_atualizado)
     return jsonify(imovel_dict), 200
-
 
 
 def delete_imovel(imovel_id):

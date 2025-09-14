@@ -6,19 +6,20 @@ from mysql.connector import Error
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
 
-# Configurações para conexão com o banco de dados usando variáveis de ambiente
+load_dotenv()
+# Configurações para conexão c/ banco de dados usando variáveis de ambiente
 config = {
-    'host': os.getenv('DB_HOST'),  # Obtém o host do banco de dados da variável de ambiente
-    'user': os.getenv('DB_USER'),  # Obtém o usuário do banco de dados da variável de ambiente
-    'password': os.getenv('DB_PASSWORD'),  # Obtém a senha do banco de dados da variável de ambiente
-    'database': os.getenv('DB_NAME'),  # Obtém o nome do banco de dados da variável de ambiente
-    'port': int(os.getenv('DB_PORT')),  # Obtém a porta do banco de dados da variável de ambiente
-    'ssl_ca': os.getenv('SSL_CA_PATH')  # Caminho para o certificado SSL
+    'host': os.getenv('DB_HOST'),  
+    'user': os.getenv('DB_USER'),  
+    'password': os.getenv('DB_PASSWORD'), 
+    'database': os.getenv('DB_NAME'),  
+    'port': int(os.getenv('DB_PORT')), 
+    'ssl_ca': os.getenv('SSL_CA_PATH')
 }
 
 
+# Classe para os imóveis
 @dataclass
 class Imovel:
     id: int 
@@ -49,9 +50,7 @@ def get_imoveis():
     imoveis_rows = cur.fetchall()
     cur.close()
     conn.close()
-    
-    # Armazenando os imóveis em dataclasses e elas em dicionários
-    imoveis = []
+    imoveis = [] # Armazenando os imóveis em dataclasses e elas em dicionários
     for row in imoveis_rows:
         imovel = Imovel(
             id=row[0],             
@@ -74,10 +73,7 @@ def get_imovel_by_id(imovel_id):
     row = cur.fetchone()
     cur.close()
     conn.close()
-    
-    # Retornando o imóvel em dataclass
-    return Imovel(
-        id=row[0],             
+    return Imovel(id=row[0],             
         logradouro= row[1],
         tipo_logradouro= row[2],
         bairro= row[3],
@@ -105,14 +101,12 @@ def update_data_on_imovel(imovel_id, data):
     set_clause = ", ".join([f"{campo} = %s" for campo in data.keys()])
     values = list(data.values())
     values.append(imovel_id)
-
     sql = f"UPDATE imoveis SET {set_clause} WHERE id = %s"
     cur.execute(sql, values)
     conn.commit()
     cur.close()
     conn.close()
     return get_imovel_by_id(imovel_id)
-
 
 
 def delete_imovel_from_db(imovel_id):
@@ -124,18 +118,15 @@ def delete_imovel_from_db(imovel_id):
         if not exists:
             cur.close()
             return False
-
         cur.execute('DELETE FROM imoveis WHERE id = %s', (imovel_id,))
         conn.commit()
         cur.close()
         return True
-
     except Exception as e:
         conn.rollback()
         raise e
     finally:
         conn.close()
-
 
 
 def get_imoveis_by_type_name(tipo):
@@ -150,7 +141,6 @@ def get_imoveis_by_type_name(tipo):
         return imoveis
     finally:
         conn.close()
-
 
 
 def get_imoveis_by_city_name(cidade):
