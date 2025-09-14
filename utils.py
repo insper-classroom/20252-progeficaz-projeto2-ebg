@@ -93,44 +93,49 @@ def add_imovel_to_db(logradouro, tipo_logradouro, bairro, cidade, cep, tipo, val
     cur = conn.cursor()
     cur.execute('INSERT INTO imoveis (logradouro, tipo_logradouro, bairro, cidade, cep, tipo, valor, data_aquisicao) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (logradouro, tipo_logradouro, bairro, cidade, cep, tipo, valor, data_aquisicao))
     conn.commit()
+    novo_id = cur.lastrowid
     cur.close()
     conn.close()
-    imoveis_atualizado = get_imoveis()
-    return imoveis_atualizado
+    return get_imovel_by_id(novo_id)
 
         
-def update_data_on_imovel(imovel, data):
+def update_data_on_imovel(imovel_id, data):
     conn = connect_db()
     cur = conn.cursor()
-    
-    # Definindo qual é o campo que vamos alterar
     set_clause = ", ".join([f"{campo} = %s" for campo in data.keys()])
     values = list(data.values())
-    values.append(imovel)
+    values.append(imovel_id)
 
     sql = f"UPDATE imoveis SET {set_clause} WHERE id = %s"
     cur.execute(sql, values)
     conn.commit()
     cur.close()
     conn.close()
-    imoveis_atualizado = get_imoveis()
-    return imoveis_atualizado
+    return get_imovel_by_id(imovel_id)
+
 
 
 def delete_imovel_from_db(imovel_id):
     conn = connect_db()
     try:
         cur = conn.cursor()
+        cur.execute('SELECT id FROM imoveis WHERE id = %s', (imovel_id,))
+        exists = cur.fetchone()
+        if not exists:
+            cur.close()
+            return False
+
         cur.execute('DELETE FROM imoveis WHERE id = %s', (imovel_id,))
         conn.commit()
         cur.close()
-        imoveis_atualizado = get_imoveis()
-        return imoveis_atualizado
+        return True
+
     except Exception as e:
         conn.rollback()
         raise e
     finally:
         conn.close()
+
 
 
 def get_imoveis_by_type_name(tipo):
