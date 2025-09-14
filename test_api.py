@@ -372,3 +372,42 @@ def test_get_imovel_by_type(mock_connect_db, client, tipo, esperado):
 
     assert response.status_code == 200
     assert response.get_json() == esperado
+    
+    
+# ==================================================================== 6. GET/<TIPO> ==========================================================================================
+@pytest.mark.parametrize('cidade, esperado', [
+    (
+        'Araras',
+        [
+            {'id': 0, 'logradouro': 'Rua 1', 'tipo_logradouro': 'Rua', 'bairro': 'Bairro 1', 'cidade': 'Araras', 'cep': '12345-000', 'tipo': 'Apartamento', 'valor': 350000.0, 'data_aquisicao': '2023-01-10'},
+            {'id': 1, 'logradouro': 'Rua 2', 'tipo_logradouro': 'Rua', 'bairro': 'Bairro 2', 'cidade': 'Araras', 'cep': '12345-001', 'tipo': 'Apartamento', 'valor': 360000.0, 'data_aquisicao': '2023-02-10'},
+        ]
+    ),
+    (
+        'Campinas',
+        [
+            {'id': 2, 'logradouro': 'Rua 3', 'tipo_logradouro': 'Rua', 'bairro': 'Bairro 3', 'cidade': 'Campinas', 'cep': '12345-002', 'tipo': 'Casa', 'valor': 370000.0, 'data_aquisicao': '2023-03-10'},
+            {'id': 3, 'logradouro': 'Rua 4', 'tipo_logradouro': 'Rua', 'bairro': 'Bairro 4', 'cidade': 'Campinas', 'cep': '12345-002', 'tipo': 'Casa', 'valor': 380000.0, 'data_aquisicao': '2023-04-10'}
+        ]
+    ),
+])
+
+
+@patch('utils.connect_db')
+def test_get_imovel_by_type(mock_connect_db, client, cidade, esperado):
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor
+
+
+    chaves = list(esperado[0].keys())
+    mock_result = [tuple(imovel[k] for k in chaves) for imovel in esperado]
+
+
+    mock_cursor.fetchall.return_value = mock_result
+    mock_connect_db.return_value = mock_conn
+    response = client.get(f'/imoveis/cidade/{cidade}')
+
+
+    assert response.status_code == 200
+    assert response.get_json() == esperado
