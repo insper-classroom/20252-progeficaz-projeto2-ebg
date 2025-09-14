@@ -321,7 +321,7 @@ def test_delete_imovel(mock_connect_db, imovel_id, antes, depois, esperado, clie
     mock_conn.cursor.return_value = mock_cursor
 
 
-    mock_cursor.fetchall = [antes, depois]
+    mock_cursor.fetchall.return_value = depois
     mock_connect_db.return_value = mock_conn
 
 
@@ -374,7 +374,7 @@ def test_get_imovel_by_type(mock_connect_db, client, tipo, esperado):
     assert response.get_json() == esperado
     
     
-# ==================================================================== 6. GET/<TIPO> ==========================================================================================
+# ==================================================================== 7. GET/<CIDADE> ==========================================================================================
 @pytest.mark.parametrize('cidade, esperado', [
     (
         'Araras',
@@ -394,20 +394,17 @@ def test_get_imovel_by_type(mock_connect_db, client, tipo, esperado):
 
 
 @patch('utils.connect_db')
-def test_get_imovel_by_type(mock_connect_db, client, cidade, esperado):
+def test_get_imovel_by_city(mock_connect_db, client, cidade, esperado):
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
     mock_conn.cursor.return_value = mock_cursor
 
-
     chaves = list(esperado[0].keys())
     mock_result = [tuple(imovel[k] for k in chaves) for imovel in esperado]
-
 
     mock_cursor.fetchall.return_value = mock_result
     mock_connect_db.return_value = mock_conn
     response = client.get(f'/imoveis/cidade/{cidade}')
-
 
     assert response.status_code == 200
     assert response.get_json() == esperado

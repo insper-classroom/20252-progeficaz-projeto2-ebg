@@ -140,7 +140,24 @@ def get_imoveis_by_type_name(tipo):
         cur.execute('SELECT * FROM imoveis WHERE tipo = %s', (tipo,))
         rows = cur.fetchall()
         cur.close()
-        return rows
+        chaves = ["id", "logradouro", "tipo_logradouro", "bairro", "cidade", "cep", "tipo", "valor", "data_aquisicao"]
+        imoveis = [dict(zip(chaves, row)) for row in rows]
+        return imoveis
+    finally:
+        conn.close()
+
+
+
+def get_imoveis_by_city_name(cidade):
+    conn = connect_db()
+    try:
+        cur = conn.cursor()
+        cur.execute('SELECT * FROM imoveis WHERE cidade = %s', (cidade,))
+        rows = cur.fetchall()
+        cur.close()
+        chaves = ["id", "logradouro", "tipo_logradouro", "bairro", "cidade", "cep", "tipo", "valor", "data_aquisicao"]
+        imoveis = [dict(zip(chaves, row)) for row in rows]
+        return imoveis
     except Exception as e:
         raise e
     finally:

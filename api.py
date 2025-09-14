@@ -50,13 +50,20 @@ def delete_imovel(imovel_id):
     imoveis = views.delete_imovel(imovel_id)
     return imoveis
 
+
 @app.route('/imoveis/tipo/<type>', methods=['GET'])
 def get_imoveis_by_type(type):
     print(request)
     imoveis = views.get_imoveis_by_type(type)
     return imoveis
-    
+
+
+@app.route('/imoveis/cidade/<city>', methods=['GET'])
+def get_imoveis_by_city(city):
+    print(request)
+    imoveis = views.get_imoveis_by_city(city)
+    return imoveis
+
 
 if __name__ == "__main__":
     app.run(debug=True)
-    
