@@ -4,6 +4,19 @@ from utils import connect_db
 from unittest.mock import patch, MagicMock
 from utils import Imovel
 
+# Adaptando os testes para que fiquem de acordo com o conceito 3 do modelo de HATEAOS
+
+def remove_links(data):
+    """
+    Remove o campo 'links' de cada imóvel (ou de um dicionário único) antes da comparação nos asserts.
+    """
+    if isinstance(data, dict):
+        return {k: v for k, v in data.items() if k != 'links'}
+    elif isinstance(data, list):
+        return [{k: v for k, v in item.items() if k != 'links'} for item in data]
+    return data
+
+
 # 1. FIXTURE
 @pytest.fixture
 def client():
@@ -75,7 +88,8 @@ def test_get_imoveis(mock_connect_db, client):
         'data_aquisicao': '2023-03-10'
     }]
         
-    assert response.get_json() == expected_response
+    assert remove_links(response.get_json()) == expected_response
+
     
     
 # ==================================================================== 2. GET/<ID> ==========================================================================================
@@ -156,7 +170,8 @@ def test_get_imovel(mock_connect_db, client, imovel_id, esperado, mock_result):
     
     # THEN
     assert response.status_code == 200
-    assert response.get_json() == esperado
+    assert remove_links(response.get_json()) == esperado
+
     
 
 # =================================================================== 3. POST ====================================================================
@@ -209,8 +224,8 @@ def test_add_imovel(mock_connect_db, client):
             'valor': 380000.0,
             'data_aquisicao': '2023-04-10'
         }
-
-        assert response.get_json() == expected_response
+        
+    assert remove_links(response.get_json()) == expected_response
     
 
 # ============================================================================ 4. PUT ==========================================================================
@@ -289,7 +304,11 @@ def test_delete_imovel_not_found(mock_connect_db, client):
 
     response = client.delete("/imoveis/9999")
     assert response.status_code == 404
-    assert response.get_json() == {'erro': 'Imóvel não encontrado'}
+    assert response.get_json() == {
+  "erro": "Imóvel não encontrado",
+  "codigo": 404
+}
+
 
 
 # ==================================================================== 6. GET/<TIPO> ==========================================================================================
@@ -328,7 +347,7 @@ def test_get_imovel_by_type(mock_connect_db, client, tipo, esperado):
 
 
     assert response.status_code == 200
-    assert response.get_json() == esperado
+    assert remove_links(response.get_json()) == esperado
     
     
 # ==================================================================== 7. GET/<CIDADE> ==========================================================================================
@@ -364,4 +383,4 @@ def test_get_imovel_by_city(mock_connect_db, client, cidade, esperado):
     response = client.get(f'/imoveis/cidade/{cidade}')
 
     assert response.status_code == 200
-    assert response.get_json() == esperado
+    assert remove_links(response.get_json()) == esperado
