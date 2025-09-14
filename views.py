@@ -1,4 +1,4 @@
-from utils import get_imoveis, get_imovel_by_id, add_imovel_to_db, update_data_on_imovel, delete_imovel_from_db
+from utils import get_imoveis, get_imovel_by_id, add_imovel_to_db, update_data_on_imovel, delete_imovel_from_db, get_imoveis_by_type_name
 from flask import jsonify
     
     
@@ -25,3 +25,8 @@ def update_imovel(imovel, data):
 def delete_imovel(imovel):
     imoveis = delete_imovel_from_db(imovel)
     return jsonify(imoveis)
+
+
+def get_imoveis_by_type(type):
+    imoveis = get_imoveis_by_type_name(type)
+    return jsonify(imoveis) 

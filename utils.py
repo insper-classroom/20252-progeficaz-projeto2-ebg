@@ -118,10 +118,29 @@ def update_data_on_imovel(imovel, data):
 
 def delete_imovel_from_db(imovel_id):
     conn = connect_db()
-    cur = conn.cursor()
-    cur.execute('DELETE FROM imoveis WHERE id = %s', (imovel_id,))
-    conn.commit()
-    cur.close()
-    conn.close()
-    imoveis_atualizado = get_imoveis()
-    return imoveis_atualizado
+    try:
+        cur = conn.cursor()
+        cur.execute('DELETE FROM imoveis WHERE id = %s', (imovel_id,))
+        conn.commit()
+        cur.close()
+        imoveis_atualizado = get_imoveis()
+        return imoveis_atualizado
+    except Exception as e:
+        conn.rollback()
+        raise e
+    finally:
+        conn.close()
+
+
+def get_imoveis_by_type_name(tipo):
+    conn = connect_db()
+    try:
+        cur = conn.cursor()
+        cur.execute('SELECT * FROM imoveis WHERE tipo = %s', (tipo,))
+        rows = cur.fetchall()
+        cur.close()
+        return rows
+    except Exception as e:
+        raise e
+    finally:
+        conn.close()

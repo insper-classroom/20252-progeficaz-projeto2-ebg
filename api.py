@@ -49,6 +49,12 @@ def delete_imovel(imovel_id):
     print(request)
     imoveis = views.delete_imovel(imovel_id)
     return imoveis
+
+@app.route('/imoveis/tipo/<type>', methods=['GET'])
+def get_imoveis_by_type(type):
+    print(request)
+    imoveis = views.get_imoveis_by_type(type)
+    return imoveis
     
 
 if __name__ == "__main__":
