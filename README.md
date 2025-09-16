@@ -11,7 +11,7 @@ API RESTful para uma empresa imobiliária, desenvolvida em Flask, que permite ca
 ### Link da API
 
 Acesse a API em:  
-**[https://SEU-LINK-AQUI.com](https://SEU-LINK-AQUI.com)**  
+**[https://107.23.164.193/imoveis](https://107.23.164.193/imoveis)**  
 
 ---
 
