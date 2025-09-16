@@ -11,7 +11,7 @@ API RESTful para uma empresa imobiliária, desenvolvida em Flask, que permite ca
 ### Link da API
 
 Acesse a API em:  
-**[https://107.23.164.193/imoveis](https://107.23.164.193/imoveis)**  
+**[http://54.221.82.163](http://54.221.82.163)**  
 
 ---
 
@@ -57,8 +57,11 @@ A API permite:
 ---
 
 ### Como executar localmente
-To be written
 
+```bash
+python3 api.py
+```
+---
 
 ### Sobre
 Projeto para a disciplina Programação Eficaz - Insper (2025/2).
